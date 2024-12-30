@@ -31,9 +31,13 @@ const chars = {
   },
 };
 
+const IMG_PATH =
+  "https://raw.githubusercontent.com/tickylolokaka/omori-gif-generator/refs/heads/master/images";
+
 const EMO_COUNT = 15;
 
 let images = [];
+let bg;
 
 let charButtons = [],
   emoButtons = [];
@@ -45,20 +49,25 @@ let chosenChar,
 
 let topText, bottomText;
 
-let fontSizeSlider;
+let fontSizeSlider, bgSlider;
 
 function charHasEmo(char, emoNum) {
   let chosenCharEmos = chars[char].emos[+faChecked];
   return chosenCharEmos.length > emoNum && chosenCharEmos[emoNum] != "";
 }
 
+function preload() {
+  bg = loadImage(`${IMG_PATH}/bg.png`);
+}
+
 function setup() {
-  createCanvas(212, 212);
+  createCanvas(198, 198);
   frameRate(3);
   textAlign(CENTER);
   textFont("Impact");
   fill(255);
   stroke(0);
+  imageMode(CENTER);
 
   createElement("span", "Faraway:");
   faCheck = createCheckbox();
@@ -99,6 +108,12 @@ function setup() {
   createElement("br");
   createElement("br");
 
+  createElement("span", "Background:");
+  createElement("br");
+  bgSlider = createSlider(0, 11, 0);
+  createElement("br");
+  createElement("br");
+
   let saveButton = createButton("Save");
   saveButton.mousePressed(() => {
     saveGif("omori-gif", 3, { units: "frames" });
@@ -108,10 +123,17 @@ function setup() {
 }
 
 function draw() {
-  background(0);
+  push();
+  translate(width / 2, height / 2);
+
+  let bgx = -200 * (bgSlider.value() % 4) + 300;
+  let bgy = -200 * floor(bgSlider.value() / 4) + 200;
+  image(bg, bgx, bgy, 800, 600);
 
   let imgnum = frameCount % 3;
-  image(images[imgnum], 0, 0, width, height);
+  image(images[imgnum], 0, 0, 216, 216);
+
+  pop();
 
   textSize(fontSizeSlider.value());
   text(topText.value(), width / 2, fontSizeSlider.value());
@@ -155,7 +177,7 @@ function loadImages() {
 
   for (let i = 0; i < 3; i++) {
     images[i] = loadImage(
-      `https://raw.githubusercontent.com/Ransu-ll/Omori-Dialogue-Generator/refs/heads/master/Character%20Images/${chosenChar}/${emo}/${charName}_BATTLE-${i}_${chosenEmoNum}.png`
+      `${IMG_PATH}/${chosenChar}/${emo}/${charName}_BATTLE-${i}_${chosenEmoNum}.png`
     );
   }
 }

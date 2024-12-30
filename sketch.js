@@ -45,6 +45,8 @@ let chosenChar,
 
 let topText, bottomText;
 
+let fontSizeSlider;
+
 function charHasEmo(char, emoNum) {
   let chosenCharEmos = chars[char].emos[+faChecked];
   return chosenCharEmos.length > emoNum && chosenCharEmos[emoNum] != "";
@@ -57,7 +59,6 @@ function setup() {
   textFont("Impact");
   fill(255);
   stroke(0);
-  textSize(24);
 
   createElement("span", "Faraway:");
   faCheck = createCheckbox();
@@ -92,6 +93,12 @@ function setup() {
   createElement("br");
   createElement("br");
 
+  createElement("span", "Font size:");
+  createElement("br");
+  fontSizeSlider = createSlider(1, 100, 24);
+  createElement("br");
+  createElement("br");
+
   let saveButton = createButton("Save");
   saveButton.mousePressed(() => {
     saveGif("omori-gif", 3, { units: "frames" });
@@ -106,8 +113,9 @@ function draw() {
   let imgnum = frameCount % 3;
   image(images[imgnum], 0, 0, width, height);
 
-  text(topText.value(), width / 2, 24);
-  text(bottomText.value(), width / 2, height - 5);
+  textSize(fontSizeSlider.value());
+  text(topText.value(), width / 2, fontSizeSlider.value());
+  text(bottomText.value(), width / 2, height - fontSizeSlider.value() / 5);
 }
 
 function changeChar(char) {

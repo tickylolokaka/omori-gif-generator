@@ -1,145 +1,54 @@
-const characters = {
-  "omori sunny": ["01_OMORI", "01_FA_OMORI"],
-  Aubrey: ["02_AUBREY", "02_FA_AUBREY"],
-  Kel: ["03_KEL", "03_FA_KEL"],
-  Hero: ["04_HERO", "04_FA_HERO"],
-};
-
-const emotions = {
-  neutral: 0,
-  happy: 1,
-  breathe: 1,
-  ecstatic: 2,
-  stab: 2,
-  afraid: 3,
-  succumbnt: 3,
-  sad: 4,
-  frown: 4,
-  depressed: 5,
-  angry: 6,
-  enraged: 7,
-  defeated: 8,
-  dizzy: 8,
-  toast: 8,
-  closeyoureyes: 8,
-  injured: 9,
-  victory: 10,
-  manic: 11,
-  miserable: 12,
-  furious: 13,
-  stressedout: 14,
-};
-
-const characterEmotions = {
-  Aubrey: {
-    neutral: [true, true],
-    happy: [true, true],
-    breathe: [false, false],
-    ecstatic: [true, true],
-    stab: [false, false],
-    afraid: [true, true],
-    succumbnt: [false, false],
-    sad: [true, true],
-    frown: [false, false],
-    depressed: [true, true],
-    angry: [true, true],
-    enraged: [true, true],
-    defeated: [true, true],
-    dizzy: [false, false],
-    toast: [false, false],
-    closeyoureyes: [false, false],
-    injured: [true, true],
-    victory: [true, true],
-    manic: [false, false],
-    miserable: [false, false],
-    furious: [false, false],
-    stressedout: [false, false],
+// prettier-ignore
+const chars = {
+  //   0          1          2           3            4           5            6        7          8                9          10         11       12           13         14
+  "omori sunny": {
+    names: ["01_OMORI", "01_FA_OMORI"],
+    emos: [
+      ["neutral", "happy",   "ecstatic", "succumbnt", "sad",      "depressed", "angry", "enraged", "closeyoureyes", "injured", "victory", "manic", "miserable", "furious"],
+      ["neutral", "breathe", "stab",     "afraid",    "sidelook", "",          "angry", "",        "closeyoureyes", "injured", "victory", "",      "",          "",        "stressedout"],
+    ],
   },
-  Hero: {
-    neutral: [true, true],
-    happy: [true, true],
-    breathe: [false, false],
-    ecstatic: [true, true],
-    stab: [false, false],
-    afraid: [true, true],
-    succumbnt: [false, false],
-    sad: [true, true],
-    frown: [false, false],
-    depressed: [true, true],
-    angry: [true, true],
-    enraged: [true, true],
-    defeated: [true, true],
-    dizzy: [false, false],
-    toast: [false, false],
-    closeyoureyes: [false, false],
-    injured: [true, true],
-    victory: [true, true],
-    manic: [false, false],
-    miserable: [false, false],
-    furious: [false, false],
-    stressedout: [false, false],
+  Aubrey: {
+    names: ["02_AUBREY", "02_FA_AUBREY"],
+    emos: [
+      ["neutral", "happy",   "ecstatic", "afraid",    "sad",      "depressed", "angry", "enraged", "defeated",      "injured", "victory"],
+      ["neutral", "happy",   "ecstatic", "afraid",    "sad",      "depressed", "angry", "enraged", "defeated",      "injured", "victory"],
+    ],
   },
   Kel: {
-    neutral: [true, true],
-    happy: [true, true],
-    breathe: [false, false],
-    ecstatic: [true, true],
-    stab: [false, false],
-    afraid: [true, true],
-    succumbnt: [false, false],
-    sad: [false, false],
-    frown: [true, true],
-    depressed: [true, true],
-    angry: [true, true],
-    enraged: [true, true],
-    defeated: [false, false],
-    dizzy: [false, true],
-    toast: [true, false],
-    closeyoureyes: [false, false],
-    injured: [true, true],
-    victory: [true, true],
-    manic: [false, false],
-    miserable: [false, false],
-    furious: [false, false],
-    stressedout: [false, false],
+    names: ["03_KEL", "03_FA_KEL"],
+    emos: [
+      ["neutral", "happy",   "ecstatic", "afraid",    "frown",    "depressed", "angry", "enraged", "toast",         "injured", "victory"],
+      ["neutral", "happy",   "ecstatic", "afraid",    "frown",    "sidelook",  "angry", "enraged", "dizzy",         "injured", "victory"],
+    ],
   },
-  "omori sunny": {
-    neutral: [true, true],
-    happy: [true, false],
-    breathe: [false, true],
-    ecstatic: [true, false],
-    stab: [false, true],
-    afraid: [false, true],
-    succumbnt: [true, false],
-    sad: [true, true],
-    frown: [false, false],
-    depressed: [true, false],
-    angry: [true, true],
-    enraged: [true, false],
-    defeated: [false, false],
-    dizzy: [false, false],
-    toast: [false, false],
-    closeyoureyes: [true, true],
-    injured: [true, true],
-    victory: [true, true],
-    manic: [true, false],
-    miserable: [true, false],
-    furious: [true, false],
-    stressedout: [false, true],
+  Hero: {
+    names: ["04_HERO", "04_FA_HERO"],
+    emos: [
+      ["neutral", "happy",   "ecstatic", "afraid",    "sad",      "depressed", "angry", "enraged", "defeated",      "injured", "victory"],
+      ["neutral", "happy",   "ecstatic", "afraid",    "sad",      "depressed", "angry", "enraged", "defeated",      "injured", "victory"],
+    ],
   },
 };
+
+const EMO_COUNT = 15;
 
 let images = [];
 
+let charButtons = [],
+  emoButtons = [];
 let faCheck;
-let chosenName,
-  chosenEmo,
+
+let chosenChar,
+  chosenEmoNum = 0,
   faChecked = false;
 
-let charButtons = [],
-  emoButtons = {};
-
 let topText, bottomText;
+
+function charHasEmo(char, emoNum) {
+  let chosenCharEmos = chars[char].emos[+faChecked];
+  return chosenCharEmos.length > emoNum && chosenCharEmos[emoNum] != "";
+}
 
 function setup() {
   createCanvas(212, 212);
@@ -154,13 +63,13 @@ function setup() {
   faCheck = createCheckbox();
   faCheck.mousePressed(() => {
     faChecked = !faChecked;
-    changeChar(chosenName);
+    changeChar(chosenChar);
   });
   faCheck.style("display:inline");
   createElement("br");
   createElement("br");
 
-  for (let [char, _] of Object.entries(characterEmotions)) {
+  for (let [char, _] of Object.entries(chars)) {
     charButtons.push(createButton(char));
     charButtons[charButtons.length - 1].mousePressed(() => {
       changeChar(char);
@@ -169,10 +78,10 @@ function setup() {
   createElement("br");
   createElement("br");
 
-  for (let [emo, _] of Object.entries(emotions)) {
-    emoButtons[emo] = createButton(emo);
-    emoButtons[emo].mousePressed(() => {
-      changeEmo(emo);
+  for (let i = 0; i < EMO_COUNT; i++) {
+    emoButtons.push(createButton(""));
+    emoButtons[emoButtons.length - 1].mousePressed(() => {
+      changeEmo(i);
     });
   }
   createElement("br");
@@ -188,7 +97,7 @@ function setup() {
     saveGif("omori-gif", 3, { units: "frames" });
   });
 
-  changeChar("Aubrey");
+  changeChar("omori sunny");
 }
 
 function draw() {
@@ -202,41 +111,43 @@ function draw() {
 }
 
 function changeChar(char) {
-  chosenName = char;
-  for (let [emo, showemo] of Object.entries(characterEmotions[char])) {
-    emoButtons[emo].style(
-      showemo[+faChecked] ? "display:inline" : "display:none"
-    );
+  chosenChar = char;
+  for (let i = 0; i < EMO_COUNT; i++) {
+    if (charHasEmo(chosenChar, i)) {
+      emoButtons[i].style("display:inline");
+      emoButtons[i].html(chars[chosenChar].emos[+faChecked][i]);
+    } else {
+      emoButtons[i].style("display:none");
+    }
   }
-  changeEmo("neutral");
+  if (!charHasEmo(chosenChar, chosenEmoNum)) changeEmo(0);
+  else loadImages();
 }
 
-function changeEmo(emo) {
-  chosenEmo = emo;
-  loadCharEmo(chosenName, emo);
+function changeEmo(emoNum) {
+  chosenEmoNum = emoNum;
+  loadImages();
 }
 
-function loadCharEmo(char, emo) {
-  console.log(`Loading ${char} ${emo}`);
-  charnames = characters[char];
-  emonum = emotions[emo];
+function loadImages() {
+  console.log(`Loading ${chosenChar} ${chosenEmoNum}`);
+  let charName = chars[chosenChar].names[+faChecked];
+  let emo = chars[chosenChar].emos[+faChecked][chosenEmoNum];
 
-  if (char == "Kel") {
-    if (emo == "depressed") emo = "sidelook-depressed";
+  if (chosenChar == "Kel") {
+    if (emo == "depressed" || emo == "sidelook") emo = "sidelook-depressed";
     if (emo == "dizzy" || emo == "toast") emo = "dizzy-toast";
   }
-  if (char == "omori sunny") {
+  if (chosenChar == "omori sunny") {
     if (emo == "afraid" || emo == "succumbnt") emo = "afraid-succumbnt";
     if (emo == "breathe" || emo == "happy") emo = "breathe-happy";
-    if (emo == "sad") emo = "sidelook-sad";
+    if (emo == "sad" || emo == "sidelook") emo = "sidelook-sad";
     if (emo == "stab" || emo == "ecstatic") emo = "stab-ecstatic";
   }
 
   for (let i = 0; i < 3; i++) {
     images[i] = loadImage(
-      `https://raw.githubusercontent.com/Ransu-ll/Omori-Dialogue-Generator/refs/heads/master/Character%20Images/${char}/${emo}/${
-        charnames[+faChecked]
-      }_BATTLE-${i}_${emonum}.png`
+      `https://raw.githubusercontent.com/Ransu-ll/Omori-Dialogue-Generator/refs/heads/master/Character%20Images/${chosenChar}/${emo}/${charName}_BATTLE-${i}_${chosenEmoNum}.png`
     );
   }
 }
